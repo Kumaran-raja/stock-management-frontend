@@ -1,0 +1,58 @@
+#stockInput{
+    padding: 10px;
+    font-size: 15px;
+}
+.StockSelect{
+    padding: 10px;
+    font-size: 15px;
+}
+label{
+    font-size: 20px;
+}
+#stockForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin: auto;
+    margin-top: 20px;
+  }
+  
+th, td {
+    border: 1px solid black;
+    padding: 8px 12px;
+    justify-content: center;
+    text-align: center;
+  }
+  th{
+    background-color: blue;
+    color: white;
+  }
+
+  
+@media (min-width: 320px) and (max-width: 376px) {
+
+}
+@media (min-width: 376px) and (max-width: 426px){
+
+}
+@media (min-width: 426px) and (max-width: 656px){
+
+}
+@media (min-width: 656px) and (max-width: 769px){
+
+}
+@media (min-width: 769px) and (max-width: 1025px){
+
+}
+@media (min-width: 1025px) and (max-width: 1201px){
+
+}
+@media only screen and (min-width: 1201px) {
+
+}
+
