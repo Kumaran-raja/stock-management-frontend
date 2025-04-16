@@ -11,7 +11,7 @@ function StockReport() {
   const [bagFilter, setBagFilter] = useState('All');
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/stock/report")
+    fetch("https://stock-50025934013.development.catalystappsail.in/api/stock/report")
       .then((res) => res.json())
       .then((data) => {
         const sorted = Array.isArray(data) ? data.sort((a, b) => new Date(a.entryDate) - new Date(b.entryDate)) : [];
