@@ -67,7 +67,12 @@ function Entrypage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          bagCode: formData.bagCode,
+          itemCount: formData.itemCount,
+          type: formData.type,
+          entryDate: formData.entryDate
+        }),
       });
 
       if (response.ok) {
