@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Stockpage.css';
+import printing from './assets/printing.png'
 
 function StockReport() {
   const navigate = useNavigate();
@@ -88,6 +89,7 @@ function StockReport() {
             <th>Receipt</th>
             <th>Issued</th>
             <th>Closing</th>
+            <th>Print</th>
           </tr>
         </thead>
         <tbody>
@@ -103,6 +105,8 @@ function StockReport() {
                 <td>{item.receipt}</td>
                 <td>{item.issued}</td>
                 <td>{item.closing}</td>
+                <td><img src={printing} alt="" width="25px"/></td>
+
               </tr>
             ))
           )}

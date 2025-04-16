@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Entrypage.css';
-
+import printing from './assets/printing.png'
 function Entrypage() {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
-
+  const [tableData, setTableData] = useState([]);
+  const [allData, setAllData] = useState([]);
   const getCurrentMonth = () => {
     const now = new Date();
     return now.toISOString().slice(0, 7);
@@ -20,18 +19,36 @@ function Entrypage() {
     month: getCurrentMonth(),
   });
 
+  // Fetch data when the component mounts or when type changes
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      month: getCurrentMonth()
-    }));
-  }, []);
+    fetchData(formData.type);
+  }, [formData.type]);
+
+  const fetchData = async (type) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/stock/entries?type=${type}`);
+      if (response.ok) {
+        const data = await response.json();
+        setAllData(data);   
+        setTableData(data);
+      } else {
+        console.error("Failed to fetch table data");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value.toUpperCase(),
+      [name]:
+        name === 'entryDate'
+          ? value
+          : name === 'type'
+          ? value.toLowerCase()
+          : value.toUpperCase(),
     });
   };
 
@@ -55,7 +72,7 @@ function Entrypage() {
 
       if (response.ok) {
         console.log('Data saved successfully');
-        setIsVisible(true);
+        fetchData(formData.type); // refresh table
       } else {
         console.error('Failed to save data');
       }
@@ -64,11 +81,89 @@ function Entrypage() {
     }
   };
 
+  
+  const [filterBagCode, setFilterBagCode] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const handleFilter = (e) => {
+    e.preventDefault();
+  
+    const filtered = allData.filter(item => {
+      const itemDate = new Date(item.entryDate);
+      const from = fromDate ? new Date(fromDate) : null;
+      const to = toDate ? new Date(toDate) : null;
+  
+      const matchesBagCode = filterBagCode ? item.bagCode === filterBagCode : true;
+      const matchesFrom = from ? itemDate >= from : true;
+      const matchesTo = to ? itemDate <= to : true;
+  
+      return matchesBagCode && matchesFrom && matchesTo;
+    });
+  
+    setTableData(filtered);
+  };
+  const handlePrint = (rowData) => {
+    const printWindow = window.open('', '', 'width=800,height=600');
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Print Report</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              padding: 20px;
+            }
+            h2 {
+              text-align: center;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+            }
+            th, td {
+              border: 1px solid black;
+              padding: 10px;
+              text-align: left;
+            }
+            th {
+              background-color: #007BFF;
+              color: white;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Stock Entry Report</h2>
+          <table>
+            <tr><th>Bag Code</th><td>${rowData.bagCode}</td></tr>
+            <tr><th>Type</th><td>${formData.type}</td></tr>
+            <tr><th>Entry Date</th><td>${rowData.entryDate}</td></tr>
+            <tr><th>Item Count</th><td>${rowData.itemCount}</td></tr>
+          </table>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(() => window.close(), 0);
+            }
+          </script>
+        </body>
+      </html>
+    `;
+  
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  };
+  
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <h1>Entry Page</h1>
-        <button style={{ margin: '20px' }} onClick={() => navigate('/report')} type="button">Report</button>
+        <div>
+          <button style={{ margin: '20px' }} onClick={() => navigate('/report')} type="button">
+            Stock Report
+          </button>
+        </div>
       </div>
 
       <div className='EntrypageContainer'>
@@ -76,17 +171,22 @@ function Entrypage() {
           <h1 style={{ textAlign: "center" }}>NEW DATA</h1>
 
           <div className="form-group">
-            <label style={{ marginRight: '20px' }} htmlFor="bagCode">Bag Code</label>
-            <input style={{ textTransform: 'uppercase' }} type="text" id="bagCode" name="bagCode" value={formData.bagCode} onChange={handleInputChange} placeholder='Ex:J001' />
+            <label htmlFor="bagCode">Bag Code</label>
+            <input className='userinput' style={{ textTransform: 'uppercase' }} type="text" id="bagCode" name="bagCode" value={formData.bagCode} onChange={handleInputChange} placeholder='Ex:J001' />
           </div>
 
           <div className="form-group">
-            <label style={{ marginRight: '20px' }} htmlFor="itemCount">Number of Items</label>
-            <input type="number" id="itemCount" name="itemCount" value={formData.itemCount} onChange={handleInputChange} placeholder='10' />
+            <label htmlFor="itemCount">Number of Items</label>
+            <input className='userinput' type="number" id="itemCount" name="itemCount" value={formData.itemCount} onChange={handleInputChange} placeholder='10' />
           </div>
 
           <div className="form-group">
-            <label style={{ marginRight: '20px' }} htmlFor="type">Type</label>
+            <label htmlFor="entryDate">Entry Date</label>
+            <input className='userinput' type="date" id="entryDate" name="entryDate" value={formData.entryDate} onChange={handleInputChange} />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="type">Type</label>
             <select id="entrypageSelect" name="type" value={formData.type} onChange={handleInputChange}>
               <option value="receipt">RECEIPT</option>
               <option value="issued">ISSUED</option>
@@ -94,34 +194,61 @@ function Entrypage() {
           </div>
 
           <div className="form-group">
-            <p></p>
-            <input type="submit" />
+          <p></p>
+            <input className='userinput' type="submit" />
           </div>
         </form>
 
-        <div id='print_container' style={{ display: isVisible ? 'block' : 'none' }}>
-          <h1 style={{ textAlign: "center" }}>Report</h1>
-          <div id='print_data'>
-            <p>Bag Code</p>
-            <p>{formData.bagCode}</p>
-          </div>
-          <div id='print_data'>
-            <p>Number of Items</p>
-            <p>{formData.itemCount}</p>
-          </div>
-          <div id='print_data'>
-            <p>{formData.type}</p>
-          </div>
-          <div id='print_data'>
-            <p>Month</p>
-            <p>{formData.month}</p>
-          </div>
-          <button
-            style={{ fontSize: "15px", background: "green", color: "white", padding: "10px 20px" }}
-            onClick={() => { window.print() }}
-          >
-            Print
-          </button>
+        {/* Table section */}
+        <div>
+          <h2 style={{textAlign:"center"}}>{formData.type.toUpperCase()} DATA</h2>
+          <form onSubmit={handleFilter} style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+            <label>Bag Code:</label>
+            <select style={{ padding: "5px" }} value={filterBagCode} onChange={(e) => setFilterBagCode(e.target.value)}>
+              <option value="">All</option>
+              {/* dynamically populate options from allData */}
+              {[...new Set(allData.map(item => item.bagCode))].map((code, i) => (
+                <option key={i} value={code}>{code}</option>
+              ))}
+            </select>
+
+            <label>From:</label>
+            <input style={{ padding: "5px" }} type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+
+            <label>To:</label>
+            <input style={{ padding: "5px" }} type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+
+            <button style={{ padding: "5px" }} type="submit">Search</button>
+          </form>
+
+
+          <table>
+            <thead>
+              <tr>
+                <th>BAG CODE</th>
+                <th>Quantity</th>
+                <th>Entry Date</th>
+                <th>Print</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.length > 0 ? (
+                tableData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.bagCode}</td>
+                    <td>{item.itemCount}</td>
+                    <td>{item.entryDate}</td>
+                    <td><img   style={{ cursor: 'pointer', width: '20px' }}
+  onClick={() => handlePrint(item)} src={printing} alt="" width="25px"/></td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center' }}>No data found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

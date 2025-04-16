@@ -2,8 +2,8 @@
   display: grid;
   grid-template-columns: 100%;
 }
-input{
-    padding: 10px;
+.userinput{
+    padding: 5px;
     font-size: 15px;
     width: 150px;
 }
@@ -46,87 +46,50 @@ th, td {
     grid-template-columns: 50% 50%;
     margin-top: 20px;
 }
-#print_container{
-  width: 30%;
-  display: block;
-  margin: auto;
-  padding: 20px;
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.4);
-  margin-top: 30px;
-}
-#print_container p{
-  font-size: 20px;
-}
-#print_data{
-  display: grid;
-  grid-template-columns: 80% 20%;
-}
+
 @media print {
   body * {
     visibility: hidden;
   }
 
-  #print_container, #print_container * {
+  #printSection, #printSection * {
     visibility: visible;
   }
 
-  #print_container {
+  #printSection {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    background: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-
-  button {
-    display: none;
+    left: 0;
+    top: 0;
+    width: 100%;
   }
 }
+
 
 @media (min-width: 320px) and (max-width: 376px) {
-  #print_container{
-    width: 90%;
-  }
+
 }
 @media (min-width: 376px) and (max-width: 426px){
-  #print_container{
-    width: 90%;
-  }
+
 }
 @media (min-width: 426px) and (max-width: 500px){
-  #print_container{
-    width: 90%;
-  }
+
 }
 @media (min-width: 500px) and (max-width: 769px){
-  #print_container{
-    width: 70%;
-  }
+
 }
 @media (min-width: 769px) and (max-width: 1025px){
-  #print_container{
-    width: 40%;
-  }
+
 }
 @media (min-width: 1025px) and (max-width: 1201px){
   .EntrypageContainer{
     grid-template-columns: 50% 50%;
   }
-  #print_container{
-    width: 60%;
-    margin-top: 0px;
-  }
+ 
 }
 @media only screen and (min-width: 1201px) {
   .EntrypageContainer{
     grid-template-columns: 50% 50%;
   }
-  #print_container{
-    width: 60%;
-    margin-top: 0px;
-  }
+ 
 }
 
