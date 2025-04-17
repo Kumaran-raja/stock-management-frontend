@@ -6,6 +6,10 @@ function Entrypage() {
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
   const [allData, setAllData] = useState([]);
+  const [filterType, setFilterType] = useState('receipt'); 
+  const [filterBagCode, setFilterBagCode] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const getCurrentMonth = () => {
     const now = new Date();
     return now.toISOString().slice(0, 7);
@@ -19,14 +23,9 @@ function Entrypage() {
     month: getCurrentMonth(),
   });
 
-  // Fetch data when the component mounts or when type changes
-  useEffect(() => {
-    fetchData(formData.type);
-  }, [formData.type]);
-
   const fetchData = async (type) => {
     try {
-      const response = await fetch(`https://stockmanagementapi-50025934013.development.catalystappsail.in/api/stock/entries?type=${type}`);
+      const response = await fetch(`http://localhost:9000/api/stock/entries?type=${type}`);
       if (response.ok) {
         const data = await response.json();
         setAllData(data);   
@@ -62,7 +61,7 @@ function Entrypage() {
     }
 
     try {
-      const response = await fetch('https://stockmanagementapi-50025934013.development.catalystappsail.in/api/stock/submit', {
+      const response = await fetch('http://localhost:9000/api/stock/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,37 +75,51 @@ function Entrypage() {
       });
 
       if (response.ok) {
-        console.log('Data saved successfully');
-        fetchData(formData.type); // refresh table
+        fetchData(formData.type);
+        alert("Data stored successfully.");
       } else {
-        console.error('Failed to save data');
+        alert("Data storage failed.");
       }
+      
     } catch (error) {
-      console.error('Error submitting form:', error);
+      // 
     }
   };
 
-  
-  const [filterBagCode, setFilterBagCode] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const handleFilter = (e) => {
+
+  const handleFilter = async (e) => {
     e.preventDefault();
   
-    const filtered = allData.filter(item => {
-      const itemDate = new Date(item.entryDate);
+    try {
+      const response = await fetch(`http://localhost:9000/api/stock/entries?type=${filterType}`);
+      if (!response.ok) {
+        return;
+      }
+      const data = await response.json();
+      setAllData(data);
+      let filtered = data;
+  
       const from = fromDate ? new Date(fromDate) : null;
       const to = toDate ? new Date(toDate) : null;
   
-      const matchesBagCode = filterBagCode ? item.bagCode === filterBagCode : true;
-      const matchesFrom = from ? itemDate >= from : true;
-      const matchesTo = to ? itemDate <= to : true;
+      filtered = filtered.filter(item => {
+        const itemDate = new Date(item.entryDate);
+        const matchesBagCode = filterBagCode ? item.bagCode === filterBagCode : true;
+        const matchesFrom = from ? itemDate >= from : true;
+        const matchesTo = to ? itemDate <= to : true;
+        return matchesBagCode && matchesFrom && matchesTo;
+      });
   
-      return matchesBagCode && matchesFrom && matchesTo;
-    });
-  
-    setTableData(filtered);
+      setTableData(filtered);
+    } catch (error) {
+      // 
+    }
   };
+  
+  useEffect(() => {
+    fetchData("receipt");
+  }, []);
+
   const handlePrint = (rowData) => {
     const printWindow = window.open('', '', 'width=800,height=600');
     const htmlContent = `
@@ -162,10 +175,10 @@ function Entrypage() {
   
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between'}}>
         <h1>Entry Page</h1>
         <div>
-          <button style={{ margin: '20px' }} onClick={() => navigate('/report')} type="button">
+          <button style={{ margin: '20px',background:"#28a745",padding:"10px",color:"white",border:"none" }} onClick={() => navigate('/report')} type="button">
             Stock Report
           </button>
         </div>
@@ -192,7 +205,7 @@ function Entrypage() {
 
           <div className="form-group">
             <label htmlFor="type">Type</label>
-            <select id="entrypageSelect" name="type" value={formData.type} onChange={handleInputChange}>
+            <select className='userinput' id="entrypageSelect" name="type" value={formData.type} onChange={handleInputChange}>
               <option value="receipt">RECEIPT</option>
               <option value="issued">ISSUED</option>
             </select>
@@ -204,28 +217,45 @@ function Entrypage() {
           </div>
         </form>
 
-        {/* Table section */}
-        <div>
-          <h2 style={{textAlign:"center"}}>{formData.type.toUpperCase()} DATA</h2>
-          <form onSubmit={handleFilter} style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+        <div className='scroll_container'>
+          <h2 style={{textAlign:"center"}}>ENTRY {filterType.toUpperCase()} DATA REPORT</h2>
+          <form onSubmit={handleFilter} >
+            <div className='entryfiltergrid'>
             <label>Bag Code:</label>
-            <select style={{ padding: "5px" }} value={filterBagCode} onChange={(e) => setFilterBagCode(e.target.value)}>
+            <select style={{ padding: "5px",width:"150px",boxSizing:"border-box" }} value={filterBagCode} onChange={(e) => setFilterBagCode(e.target.value)}>
               <option value="">All</option>
-              {/* dynamically populate options from allData */}
               {[...new Set(allData.map(item => item.bagCode))].map((code, i) => (
                 <option key={i} value={code}>{code}</option>
               ))}
             </select>
+            </div>
+            <div className='entryfiltergrid'>
+            <label>Type:</label>
+            <select style={{ padding: "5px",width:"150px",boxSizing:"border-box" }}
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+            >
+              <option value="receipt">RECEIPT</option>
+              <option value="issued">ISSUED</option>
+            </select>
+          </div>
 
-            <label>From:</label>
-            <input style={{ padding: "5px" }} type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+            <div className='entryfiltergrid'>
+            <label>From Date:</label>
+            <input style={{ padding: "5px",width:"150px",boxSizing:"border-box" }} type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
 
-            <label>To:</label>
-            <input style={{ padding: "5px" }} type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            </div>
+            <div className='entryfiltergrid'>
+            <label>To Date:</label>
+            <input style={{ padding: "5px",width:"150px",boxSizing:"border-box" }} type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
 
-            <button style={{ padding: "5px" }} type="submit">Search</button>
+            </div>
+            <div className='entryfiltergrid'>
+              <p></p>
+            <button style={{ padding: "5px",width:"150px",boxSizing:"border-box" }} type="submit">Search</button>
+            </div>
+         
           </form>
-
 
           <table>
             <thead>
@@ -243,8 +273,7 @@ function Entrypage() {
                     <td>{item.bagCode}</td>
                     <td>{item.itemCount}</td>
                     <td>{item.entryDate}</td>
-                    <td><img   style={{ cursor: 'pointer', width: '20px' }}
-  onClick={() => handlePrint(item)} src={printing} alt="" width="25px"/></td>
+                    <td><img style={{ cursor: 'pointer', width: '20px' }} onClick={() => handlePrint(item)} src={printing} alt="" width="25px"/></td>
                   </tr>
                 ))
               ) : (

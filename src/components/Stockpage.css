@@ -10,10 +10,7 @@ label{
     font-size: 20px;
 }
 #stockForm{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+  gap: 10px;
 }
 table {
     border: 1px solid black;
@@ -32,27 +29,54 @@ th, td {
     background-color: blue;
     color: white;
   }
-
+.report_grid{
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin-top: 20px;
   
+}
+.report_split_container{
+  display: grid;
+  grid-template-columns: 100%;
+}
+
 @media (min-width: 320px) and (max-width: 376px) {
 
 }
 @media (min-width: 376px) and (max-width: 426px){
-
+  
 }
 @media (min-width: 426px) and (max-width: 656px){
 
 }
 @media (min-width: 656px) and (max-width: 769px){
-
+  
 }
 @media (min-width: 769px) and (max-width: 1025px){
-
+  .report_split_container{
+    grid-template-columns: 40% 60%;
+  }
+  .tablescroll{
+    height: 80vh;
+    overflow-y: scroll;
+  }
 }
 @media (min-width: 1025px) and (max-width: 1201px){
-
+  .report_split_container{
+    grid-template-columns: 50% 50%;
+  }
+  .tablescroll{
+    height: 80vh;
+    overflow-y: scroll;
+  }
 }
 @media only screen and (min-width: 1201px) {
-
+  .report_split_container{
+    grid-template-columns: 50% 50%;
+  }
+  .tablescroll{
+    height: 80vh;
+    overflow-y: scroll;
+  }
 }
 

@@ -6,6 +6,7 @@
     padding: 5px;
     font-size: 15px;
     width: 150px;
+    box-sizing: border-box;
 }
 
 #entrypageSelect{
@@ -46,6 +47,11 @@ th, td {
     grid-template-columns: 50% 50%;
     margin-top: 20px;
 }
+.entryfiltergrid{
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin-top: 10px;
+}
 
 @media print {
   body * {
@@ -78,18 +84,31 @@ th, td {
 
 }
 @media (min-width: 769px) and (max-width: 1025px){
-
+  .EntrypageContainer{
+    grid-template-columns: 50% 50%;
+  }
+  .scroll_container{
+    height: 80vh;
+    overflow-y: scroll;
+  }
 }
 @media (min-width: 1025px) and (max-width: 1201px){
   .EntrypageContainer{
     grid-template-columns: 50% 50%;
   }
- 
+  .scroll_container{
+    height: 80vh;
+    overflow-y: scroll;
+  }
 }
 @media only screen and (min-width: 1201px) {
   .EntrypageContainer{
     grid-template-columns: 50% 50%;
   }
  
+  .scroll_container{
+    height: 80vh;
+    overflow-y: scroll;
+  }
 }
 
