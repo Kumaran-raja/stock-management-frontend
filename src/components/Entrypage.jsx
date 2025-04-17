@@ -26,7 +26,7 @@ function Entrypage() {
 
   const fetchData = async (type) => {
     try {
-      const response = await fetch(`https://stock-50025934013.development.catalystappsail.in/api/stock/entries?type=${type}`);
+      const response = await fetch(`https://stockmanagementapi-50025934013.development.catalystappsail.in/api/stock/entries?type=${type}`);
       if (response.ok) {
         const data = await response.json();
         setAllData(data);   
@@ -62,7 +62,7 @@ function Entrypage() {
     }
 
     try {
-      const response = await fetch('https://stock-50025934013.development.catalystappsail.in/api/stock/submit', {
+      const response = await fetch('https://stockmanagementapi-50025934013.development.catalystappsail.in/api/stock/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
