@@ -29,7 +29,7 @@ function StockReport() {
 
   // 🔁 Fetch function
   const fetchData = (fromDateVal, toDateVal, bagFilterVal) => {
-    fetch(`http://localhost:9000/api/stock/report?fromDate=${fromDateVal}&toDate=${toDateVal}`)
+    fetch(`https://stockmanagementapi-50025934013.development.catalystappsail.in/api/stock/report?fromDate=${fromDateVal}&toDate=${toDateVal}`)
       .then((res) => res.json())
       .then((data) => {
         const sorted = Array.isArray(data)
