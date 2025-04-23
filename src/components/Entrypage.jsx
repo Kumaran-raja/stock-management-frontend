@@ -82,6 +82,7 @@ function Entrypage() {
       }
       
     } catch (error) {
+      console.error("Error submitting data:", error);
       alert("failed to Access Backend API");
     }
   };
