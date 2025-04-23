@@ -83,7 +83,7 @@ function Entrypage() {
       }
       
     } catch (error) {
-      // 
+      alert("failed to Access Backend API");
     }
   };
 
