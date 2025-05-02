@@ -63,10 +63,10 @@ function Entrypage() {
     try {
       const response = await fetch('https://stock-50026128252.development.catalystappsail.in/api/stock/submit', {
         method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        // mode: 'no-cors',
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // },
         body: JSON.stringify({
           bagCode: formData.bagCode,
           itemCount: formData.itemCount,
