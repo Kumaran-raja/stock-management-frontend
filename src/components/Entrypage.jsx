@@ -60,20 +60,21 @@ function Entrypage() {
       return;
     }
 
+    const urlEncoded = new URLSearchParams();
+    urlEncoded.append('bagCode', formData.bagCode);
+    urlEncoded.append('itemCount', formData.itemCount);
+    urlEncoded.append('type', formData.type);
+    urlEncoded.append('entryDate', formData.entryDate);
+
     try {
       const response = await fetch('https://stock-50026128252.development.catalystappsail.in/api/stock/submit', {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
-          bagCode: formData.bagCode,
-          itemCount: formData.itemCount,
-          type: formData.type,
-          entryDate: formData.entryDate
-        }),
+        body: urlEncoded
       });
+
 
       if (response.ok) {
         fetchData(formData.type);
