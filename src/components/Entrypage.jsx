@@ -67,7 +67,7 @@ function Entrypage() {
       formDataToSend.append('type', formData.type);
       formDataToSend.append('entryDate', formData.entryDate);
 
-      const response = await fetch('https://your-api-url/api/stock/submit', {
+      const response = await fetch('https://stock-50026128252.development.catalystappsail.in/api/stock/submit', {
         method: 'POST',
         body: formDataToSend
       });
