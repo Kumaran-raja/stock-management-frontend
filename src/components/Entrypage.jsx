@@ -61,19 +61,15 @@ function Entrypage() {
     }
 
     try {
-      const response = await fetch('https://stock-50026128252.development.catalystappsail.in/api/stock/submit', {
+      const formDataToSend = new FormData();
+      formDataToSend.append('bagCode', formData.bagCode);
+      formDataToSend.append('itemCount', formData.itemCount);
+      formDataToSend.append('type', formData.type);
+      formDataToSend.append('entryDate', formData.entryDate);
+
+      const response = await fetch('https://your-api-url/api/stock/submit', {
         method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          bagCode: formData.bagCode,
-          itemCount: formData.itemCount,
-          type: formData.type,
-          entryDate: formData.entryDate
-        }),
+        body: formDataToSend
       });
 
       if (response.ok) {
