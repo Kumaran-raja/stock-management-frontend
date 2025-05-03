@@ -171,17 +171,27 @@ function StockReport() {
               <td colSpan="6" style={{ textAlign: 'center' }}>No data found</td>
             </tr>
           ) : (
-            filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.bagCode}</td>
-                <td>{item.opening}</td>
-                <td>{item.receipt}</td>
-                <td>{item.issued}</td>
-                <td>{item.closing}</td>
-                <td><img  style={{ cursor: 'pointer' }}
-    onClick={() => handlePrint(item, fromDate, toDate)}  src={printing} alt="Print Icon" width="25px" /></td>
-              </tr>
-            ))
+            filteredData
+          .filter(item =>
+            item.opening !== 0 ||
+            item.receipt !== 0 ||
+            item.issued !== 0 ||
+            item.closing !== 0
+          )
+          .map((item, index) => (
+            <tr key={index}>
+              <td>{item.bagCode}</td>
+              <td>{item.opening}</td>
+              <td>{item.receipt}</td>
+              <td>{item.issued}</td>
+              <td>{item.closing}</td>
+              <td><img style={{ cursor: 'pointer' }}
+                onClick={() => handlePrint(item, fromDate, toDate)}
+                src={printing}
+                alt="Print Icon"
+                width="25px" /></td>
+            </tr>
+          ))
           )}
         </tbody>
       </table>
