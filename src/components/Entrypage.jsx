@@ -60,27 +60,26 @@ function Entrypage() {
       return;
     }
 
+    const urlEncoded = new URLSearchParams();
+    urlEncoded.append('bagCode', formData.bagCode);
+    urlEncoded.append('itemCount', formData.itemCount);
+    urlEncoded.append('type', formData.type);
+    urlEncoded.append('entryDate', formData.entryDate);
     
-const urlEncoded = new URLSearchParams();
-urlEncoded.append('bagCode', formData.bagCode);
-urlEncoded.append('itemCount', formData.itemCount);
-urlEncoded.append('type', formData.type);
-urlEncoded.append('entryDate', formData.entryDate);
-
-try {
-  const response = await fetch('https://stock-50026128252.development.catalystappsail.in/api/stock/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: urlEncoded
-  });
-
-  const result = await response.json();
-  console.log(result);
-} catch (error) {
-  console.error('Error:', error);
-}
+    try {
+      const response = await fetch('https://stock-50026128252.development.catalystappsail.in/api/stock/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlEncoded
+      });
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error('Error:', error);
+    };
+  }
 
   const handleFilter = async (e) => {
     e.preventDefault();
