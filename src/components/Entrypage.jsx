@@ -266,20 +266,28 @@ function Entrypage() {
               </tr>
             </thead>
             <tbody>
-              {tableData.length > 0 ? (
-                tableData.map((item, index) => (
+            {tableData.length > 0 ? (
+              tableData.map((item, index) => {
+                const formattedDate = new Date(item.entryDate.split('-').reverse().join('-')).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                });
+                
+                return (
                   <tr key={index}>
                     <td>{item.bagCode}</td>
                     <td>{item.itemCount}</td>
-                    <td>{item.entryDate}</td>
-                    <td><img style={{ cursor: 'pointer', width: '20px' }} onClick={() => handlePrint(item)} src={printing} alt="" width="25px"/></td>
+                    <td>{formattedDate}</td>
+                    <td><img style={{ cursor: 'pointer', width: '20px' }} onClick={() => handlePrint(item)} src={printing} alt="" width="25px" /></td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: 'center' }}>No data found</td>
-                </tr>
-              )}
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ textAlign: 'center' }}>No data found</td>
+              </tr>
+            )}
             </tbody>
           </table>
         </div>

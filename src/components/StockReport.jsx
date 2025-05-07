@@ -172,26 +172,42 @@ function StockReport() {
             </tr>
           ) : (
             filteredData
-          .filter(item =>
-            item.opening !== 0 ||
-            item.receipt !== 0 ||
-            item.issued !== 0 ||
-            item.closing !== 0
-          )
-          .map((item, index) => (
-            <tr key={index}>
-              <td>{item.bagCode}</td>
-              <td>{item.opening}</td>
-              <td>{item.receipt}</td>
-              <td>{item.issued}</td>
-              <td>{item.closing}</td>
-              <td><img style={{ cursor: 'pointer' }}
-                onClick={() => handlePrint(item, fromDate, toDate)}
-                src={printing}
-                alt="Print Icon"
-                width="25px" /></td>
-            </tr>
-          ))
+              .filter(item =>
+                item.opening !== 0 ||
+                item.receipt !== 0 ||
+                item.issued !== 0 ||
+                item.closing !== 0
+              )
+              .map((item, index) => {
+                const formattedDate = item.entryDate
+                  ? new Date(item.entryDate).toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })
+                  : '';
+
+                return (
+                  <tr key={index}>
+                    <td>{item.bagCode}</td>
+                    <td>{item.opening}</td>
+                    <td>{item.receipt}</td>
+                    <td>{item.issued}</td>
+                    <td>{item.closing}</td>
+                    {/* Optional: add entry date column */}
+                    {/* <td>{formattedDate}</td> */}
+                    <td>
+                      <img
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handlePrint(item, fromDate, toDate)}
+                        src={printing}
+                        alt="Print Icon"
+                        width="25px"
+                      />
+                    </td>
+                  </tr>
+                );
+              })
           )}
         </tbody>
       </table>
